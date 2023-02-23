@@ -1,7 +1,6 @@
 package org.example;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 public class TicTacToe extends JFrame {
     private Map<String, String> gameStateData = new HashMap<>();
@@ -9,7 +8,9 @@ public class TicTacToe extends JFrame {
     private boolean stopGame = false;
     private JButton[] buttons = new JButton[9];
 
-
+    char[] Abc = {'A', 'B', 'C'};
+    char[] fromOneToThree = {'1', '2', '3'};
+    final boolean[] isX = {true};
     public TicTacToe() {
         super("Tic Tac Toe");
 
@@ -22,14 +23,15 @@ public class TicTacToe extends JFrame {
     }
 
     private void initComponents() {
-        final boolean[] isX = {true};
+
         JPanel gamePanel = new JPanel();
-        gamePanel.setBackground(Color.CYAN);
+        gamePanel.setBackground(Color.decode("#00DBAA"));
         JPanel statusReset = new JPanel();
-        statusReset.setBackground(Color.GREEN);
+        statusReset.setBackground(Color.decode("#00DBAA"));
         JLabel labelStatus = new JLabel("Game is not started");
         labelStatus.setName("LabelStatus");
         JButton ButtonReset = new JButton("Reset");
+        ButtonReset.setBackground(Color.lightGray);
         ButtonReset.setName("ButtonReset");
         statusReset.setLayout(new BorderLayout());
         statusReset.add(labelStatus, BorderLayout.WEST);
@@ -37,14 +39,12 @@ public class TicTacToe extends JFrame {
 
         add(gamePanel, BorderLayout.CENTER);
         add(statusReset, BorderLayout.SOUTH);
-
         gamePanel.setLayout(new GridLayout(3, 3, 2, 2));
-        char[] Abc = {'A', 'B', 'C'};
-        char[] fromOneToThree = {'1', '2', '3'};
         for (int i = 2,j=0; i >= 0; i--) {
             for (char alpha : Abc) {
-                JButton button = new JButton(" "/*""+alpha+fromOneToThree[i]*/);
+                JButton button = new JButton(" ");
                 button.setName("Button" + alpha + fromOneToThree[i]);
+                button.setBackground(Color.decode("#FAC020"));
                 gameStateData.put(button.getName()," ");
                 buttons[j] = button;
                 j++;
@@ -54,13 +54,14 @@ public class TicTacToe extends JFrame {
                         labelStatus.setText("Game in progress");
                         if (isX[0]) {
                             button.setText("X");
+                            button.setFont(new Font("Arial",Font.PLAIN,50));
                             isX[0] = false;
                             gameStateData.put(button.getName(), "X");
                         } else {
                             button.setText("O");
                             isX[0] = true;
                             gameStateData.put(button.getName(), "O");
-
+                            button.setFont(new Font("Arial",Font.PLAIN,50));
                         }
                         gameLogic(labelStatus);
                         if (clicks == 9 && stopGame == false){
@@ -74,20 +75,23 @@ public class TicTacToe extends JFrame {
         }
 
         ButtonReset.addActionListener(e -> {
-            for (int i = 2; i >= 0; i--) {
-                for (char alpha : Abc) {
-                    gameStateData.computeIfPresent("Button" + alpha + fromOneToThree[i],(k,v)-> " ");
-
-                }
-                for(int j=0;j<9;j++){
-                    buttons[j].setText(" ");
-                }
-                labelStatus.setText("Game is not started");
-                stopGame = false;
-                isX[0] = true;
-                clicks = 0;
-            }
+            resetGame(labelStatus);
         });
+    }
+    private void resetGame(JLabel ourlabel){
+        for (int i = 2; i >= 0; i--) {
+            for (char alpha : Abc) {
+                gameStateData.computeIfPresent("Button" + alpha + fromOneToThree[i],(k,v)-> " ");
+
+            }
+            for(int j=0;j<9;j++){
+                buttons[j].setText(" ");
+            }
+            ourlabel.setText("Game is not started");
+            stopGame = false;
+            isX[0] = true;
+            clicks = 0;
+        }
     }
     private void gameLogic(JLabel ourlabel) {
         if (gameStateData.get("ButtonA1") == gameStateData.get("ButtonB1") && gameStateData.get("ButtonB1") == gameStateData.get("ButtonC1") && gameStateData.get("ButtonB1") != " ") {
